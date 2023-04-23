@@ -1,0 +1,36 @@
+name: Update LocalSend Cask
+
+on:
+  workflow_dispatch: # only dispatch manually
+
+jobs:
+  update_cask:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Update cask
+        run: |
+          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/localsend/localsend/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+          LATEST_SHA=$(curl -sL "https://github.com/localsend/localsend/releases/download/v${LATEST_RELEASE}/LocalSend-${LATEST_RELEASE}.dmg" | sha256sum | cut -f 1 -d " ")
+          
+          echo "Latest release: $LATEST_RELEASE"
+          echo "Latest SHA: $LATEST_SHA"
+          
+          sed -i "s/version .*/version \"${LATEST_RELEASE}\"/" Casks/localsend.rb
+          sed -i "s/sha256 .*/sha256 \"${LATEST_SHA}\"/" Casks/localsend.rb
+          
+          echo "LATEST_RELEASE=$LATEST_RELEASE" >> $GITHUB_ENV
+
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMIT_MSG="Update LocalSend cask to v${{ env.LATEST_RELEASE }}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add Casks/localsend.rb
+          git commit -m "$COMMIT_MSG"
+          git push
