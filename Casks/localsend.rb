@@ -1,6 +1,6 @@
 cask "localsend" do
-  version "1.13.0"
-  sha256 "5be8ccd9a362a2930b1a4483a10d76b155931c0e933b3f14ee1a182640643a67"
+  version "1.13.1"
+  sha256 "602cba3659843ec385b48676ee63980e730f775b63dd83b66f034374cdcafee6"
 
   url "https://github.com/localsend/localsend/releases/download/v#{version}/LocalSend-#{version}.dmg"
   name "LocalSend"
