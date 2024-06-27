@@ -7,7 +7,7 @@ cask "localsend" do
   desc "An open source cross-platform alternative to AirDrop"
   homepage "https://localsend.org"
 
-  depends_on macos: ">= :catalina"
+  depends_on macos: ">= :big_sur"
 
   app "LocalSend.app"
 end
